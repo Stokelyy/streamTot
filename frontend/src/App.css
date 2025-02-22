@@ -5,54 +5,142 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Centered container */
+.app-container {
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
 }
 
 /* Input box styling */
 .input-container {
-  margin: 20px;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-bottom: 15px;
+  position: relative;
 }
 
 input[type="text"] {
-  width: 300px;
-  padding: 10px;
+  width: 100%;
+  padding: 12px;
   font-size: 16px;
   border: 1px solid #444;
   border-radius: 8px;
   background-color: #1e2125;
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, border-color 0.3s;
 }
 
 input[type="text"]:focus {
   outline: none;
+  border-color: #0099ff;
   box-shadow: 0 0 8px rgba(0, 153, 255, 0.7);
 }
 
 /* Dropdown list styling */
 .dropdown {
   position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
   background-color: #1e2125;
   border-radius: 8px;
   margin-top: 5px;
   padding: 5px;
-  width: 300px;
   max-height: 200px;
   overflow-y: auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
 .dropdown-item {
-  padding: 8px;
+  padding: 10px;
   cursor: pointer;
   color: white;
   font-size: 14px;
+  transition: background 0.2s ease-in-out;
 }
 
 .dropdown-item:hover {
   background-color: #333;
+}
+
+/* Button styling */
+.search-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: #0099ff;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.1s;
+}
+
+.search-button:hover {
+  background: #0077cc;
+}
+
+.search-button:active {
+  transform: scale(0.98);
+}
+
+/* Artist stream info */
+.stream-info {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  text-align: left;
+}
+
+/* Styling for the search input box */
+#search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #333; /* Dark border to match the dark theme */
+  border-radius: 5px;
+  background-color: #333; /* Dark background */
+  color: #fff; /* Light text */
+  outline: none;
+}
+
+#search-input:focus {
+  border-color: #1db954; /* Highlight on focus with a Spotify-like green */
+}
+
+/* Styling for the suggestion dropdown */
+#suggestions {
+  width: 100%;  /* Ensure the dropdown matches the width of the input box */
+  max-width: 100%;  /* Prevent the dropdown from expanding beyond the input box */
+  margin-top: 5px;  /* Add a little space between the input and the suggestions */
+  padding: 0;  /* Remove any default padding */
+  list-style-type: none;  /* Remove bullet points */
+  border: 2px solid #333;
+  border-radius: 5px;  /* Rounded corners for the dropdown */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);  /* Add a subtle shadow */
+  background-color: #222;  /* Dark background for the dropdown */
+  max-height: 300px;
+  color: white;  /* White text color */
+}
+
+#suggestions li {
+  padding: 10px;
+  color: #fff; /* Light text */
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+
+/* Styling for hovered suggestions */
+#suggestions li:hover {
+  background-color: #0099ff; /* Highlight on hover with a green color */
+  color: #333; /* Dark text color on hover */
 }

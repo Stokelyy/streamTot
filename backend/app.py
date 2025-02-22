@@ -1,60 +1,49 @@
-from flask import Flask, request, jsonify
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from flask import Flask, jsonify, request
+from spotify import get_total_streams_for_artist, get_artist_id, search_artists
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
-# Set up Spotify client
-sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id='your_client_id', client_secret='your_client_secret'))
-
-@app.route('/search-artists', methods=['GET'])
-def search_artists():
-    query = request.args.get('query')
+# Route for searching artists
+@app.route("/search-artists", methods=["GET"])
+def search_artists_route():
+    query = request.args.get("query", "")
     if query:
         try:
-            # Search for artists based on the query
-            result = sp.search(q=query, type='artist', limit=5)
-            artists = result['artists']['items']
-            
-            # Extract only relevant fields for display
-            artist_suggestions = [
-                {
-                    'id': artist['id'],
-                    'name': artist['name'],
-                    'image': artist['images'][0]['url'] if artist['images'] else None
-                }
-                for artist in artists
-            ]
-            return jsonify({'artists': {'items': artist_suggestions}})
+            # Call the search_artists function from spotify.py
+            results = search_artists(query)  # This will handle the search and return sorted results
+            return jsonify(results)  # Return the results as JSON
         except Exception as e:
-            return jsonify({'error': f"Error fetching artists: {str(e)}"}), 500
-    return jsonify({'error': 'No query provided'}), 400
+            return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "No query parameter provided"}), 400
 
-@app.route('/get-artist-streams', methods=['GET'])
+# Route for getting artist's total streams
 def get_artist_streams():
-    artist_name = request.args.get('artist')
+    artist_name = request.args.get("artist", "")
     if artist_name:
         try:
-            # Search for the artist based on the name provided
-            result = sp.search(q=artist_name, type='artist', limit=1)
-            if result['artists']['items']:
-                artist = result['artists']['items'][0]
-                
-                # Example data - Replace with actual Spotify data or custom data retrieval
-                total_streams = 123456789  # This is just a placeholder, replace it with actual stream data
-                album_count = 10  # This is a placeholder for the number of albums, replace as needed
+            # Use the function from spotify.py to get total streams
+            total_streams = get_total_streams_for_artist(artist_name)
+            if total_streams is None:
+                return jsonify({"error": "Artist not found or no streams available"}), 404
 
-                # Returning dummy stream data for the artist
-                return jsonify({
-                    'name': artist['name'],
-                    'totalStreams': total_streams,
-                    'albumCount': album_count
-                })
-            else:
-                return jsonify({'error': 'Artist not found'}), 404
+            # Use another function from spotify.py to get the artist's album count
+            album_count = len(get_artist_id(artist_name)['items'])
+            
+            return jsonify({
+                "totalStreams": total_streams,
+                "albumCount": album_count
+            })
         except Exception as e:
-            return jsonify({'error': f"Error fetching artist streams: {str(e)}"}), 500
-    return jsonify({'error': 'No artist name provided'}), 400
+            return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "No artist parameter provided"}), 400
 
-if __name__ == '__main__':
+
+# Simple route to check if the backend is working
+@app.route("/")
+def home():
+    return "Backend is working!"
+
+if __name__ == "__main__":
     app.run(debug=True)

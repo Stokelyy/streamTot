@@ -7,9 +7,6 @@ from dotenv import load_dotenv
 dotenv_path = os.path.join(os.getcwd(), 'backend', '.env')
 load_dotenv(dotenv_path=dotenv_path)
 
-print("SPOTIPY_CLIENT_ID:", os.getenv("SPOTIPY_CLIENT_ID"))
-print("SPOTIPY_CLIENT_SECRET:", os.getenv("SPOTIPY_CLIENT_SECRET"))
-
 # Fetch environment variables
 client_id = os.getenv("SPOTIPY_CLIENT_ID")
 client_secret = os.getenv("SPOTIPY_CLIENT_SECRET")
@@ -20,8 +17,8 @@ if not client_id or not client_secret:
 
 # Set up Spotify authentication
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-    client_id=os.getenv("SPOTIPY_CLIENT_ID"),
-    client_secret=os.getenv("SPOTIPY_CLIENT_SECRET")
+    client_id=client_id,
+    client_secret=client_secret
 ))
 
 def get_artist_id(artist_name):
@@ -46,3 +43,15 @@ def get_total_streams_for_artist(artist_name):
             total_streams += track_data['popularity']  # Assuming "popularity" correlates with streams
 
     return total_streams
+
+def search_artists(query):
+    """Fetch artist suggestions based on a search query."""
+    results = sp.search(q=query, type="artist", limit=5)
+    
+    # Sorting the results by popularity in descending order
+    sorted_results = sorted(results["artists"]["items"], key=lambda artist: artist.get("popularity", 0), reverse=True)
+    
+    # Only return the artist names and ids
+    artists = [{"id": artist["id"], "name": artist["name"]} for artist in sorted_results]
+    
+    return {"artists": {"items": artists}}

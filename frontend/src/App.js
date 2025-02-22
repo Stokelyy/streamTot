@@ -1,42 +1,60 @@
 import React, { useState } from "react";
-import "./App.css"; // Assuming the CSS is in the App.css file
+import "./App.css";
 
 const App = () => {
   const [input, setInput] = useState(""); // For the input field
   const [suggestions, setSuggestions] = useState([]); // For the suggestions
   const [artistStreams, setArtistStreams] = useState(null); // To hold the streams data
-
+  const [isFocused, setIsFocused] = useState(false);
   // Handle input changes and fetch artist suggestions
   const handleInputChange = async (event) => {
     const searchQuery = event.target.value;
     setInput(searchQuery);
-
+  
     if (searchQuery) {
-      // Call your backend or Spotify API to get artist suggestions
       try {
-        const response = await fetch(`/search-artists?query=${searchQuery}`);
+        // Make sure this request matches the backend route and gets the correct response
+        const response = await fetch(`http://localhost:5000/search-artists?query=${searchQuery}`);
         const data = await response.json();
-        setSuggestions(data.artists.items); // Assuming the API returns a list of artists
+  
+        // Check if there are artist items in the response
+        if (data.artists && data.artists.items) {
+          setSuggestions(data.artists.items); // Update the suggestions state with the fetched artists
+        }
       } catch (error) {
         console.error("Error fetching suggestions:", error);
       }
     } else {
-      setSuggestions([]);
+      setSuggestions([]); // Clear suggestions when input is empty
     }
   };
+  
 
   // Handle selection of an artist from the dropdown
   const handleSelectArtist = (artist) => {
-    setInput(artist.name);
+    setInput(artist.name); // Set the input to the artist's name
     setSuggestions([]); // Clear suggestions after selecting an artist
+    handleGetStreams(artist.name); // Automatically fetch streams for the selected artist
   };
 
+  // Handle when the input field loses focus
+  const handleBlur = () => {
+    if (!input) {
+      setIsFocused(false); // Hide dropdown when input is empty
+    }
+  };
+
+     // Handle focus event to show suggestions when input is focused
+    const handleFocus = () => {
+      setIsFocused(true);
+    };
+
   // Function to get streams for the selected artist
-  const handleGetStreams = async () => {
-    if (!input) return;
+  const handleGetStreams = async (artistName) => {
+    if (!artistName) return;
 
     try {
-      const response = await fetch(`/get-artist-streams?artist=${input}`);
+      const response = await fetch(`/get-artist-streams?artist=${artistName}`);
       const data = await response.json();
       setArtistStreams(data); // Assuming the response returns the streams data
     } catch (error) {
@@ -49,27 +67,36 @@ const App = () => {
       <h1>Spotify Artist Stream Finder</h1>
 
       {/* Input Field */}
-      <input
-        type="text"
-        value={input}
-        onChange={handleInputChange}
-        placeholder="Enter artist name"
-        className="input-field"
-      />
+      <div className="input-container">
+        <input
+          type="text"
+          value={input}
+          onChange={handleInputChange}
+          onBlur={handleBlur}  // Detect when the input loses focus
+          onFocus={handleFocus}  // Detect when the input gets focus
+          placeholder="Enter artist name"
+          className="input-field"
+        />
+      </div>
 
-      {/* Suggestions Dropdown */}
-      {suggestions.length > 0 && (
-        <ul className="suggestions-list">
-          {suggestions.map((artist) => (
-            <li key={artist.id} onClick={() => handleSelectArtist(artist)}>
-              {artist.name}
-            </li>
-          ))}
-        </ul>
-      )}
+ {/* Suggestions Dropdown */}
+{isFocused && suggestions.length > 0 && (
+  <ul id="suggestions" className="suggestions-list">
+    {suggestions.map((artist) => (
+      <li
+        key={artist.id}
+        onClick={() => handleSelectArtist(artist)}
+        className="suggestion-item" // Add a class here for individual list items if you need
+      >
+        {artist.name}
+      </li>
+    ))}
+  </ul>
+)}
+
 
       {/* Button to Get Artist Streams */}
-      <button className="search-button" onClick={handleGetStreams}>
+      <button className="search-button" onClick={() => handleGetStreams(input)}>
         Get Streams
       </button>
 
@@ -79,7 +106,6 @@ const App = () => {
           <h3>Artist Streams</h3>
           <p>Total Streams: {artistStreams.totalStreams}</p>
           <p>Album Count: {artistStreams.albumCount}</p>
-          {/* You can add more stream details here */}
         </div>
       )}
     </div>
