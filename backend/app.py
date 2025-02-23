@@ -7,26 +7,6 @@ import requests
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-def get_spotify_data(artist_id, access_token):
-    headers = {
-        "Authorization": f"Bearer {access_token}"
-    }
-    retries = 3
-    delay = 5  # Initial delay in seconds
-
-    for attempt in range(retries):
-        response = requests.get(SPOTIFY_API_URL.format(artist_id), headers=headers)
-        
-        if response.status_code == 429:  # 429 indicates rate limit exceeded
-            retry_after = int(response.headers.get("Retry-After", delay))  # Get Retry-After from header or default to `delay`
-            print(f"Rate limit exceeded. Retrying after {retry_after} seconds.")
-            time.sleep(retry_after)
-        elif response.status_code == 200:
-            return response.json()
-        else:
-            response.raise_for_status()  # Raise for other HTTP errors
-    
-    return None  # Return None if all retries failed
 
 # Route for searching artists
 @app.route("/search-artists", methods=["GET"])
