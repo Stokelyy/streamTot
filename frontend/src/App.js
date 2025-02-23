@@ -54,7 +54,7 @@ const App = () => {
     if (!artistName) return;
 
     try {
-      const response = await fetch(`/get-artist-streams?artist=${artistName}`);
+      const response = await fetch(`http://localhost:5000/get-artist-streams?artist=${artistName}`);
       const data = await response.json();
       setArtistStreams(data); // Assuming the response returns the streams data
     } catch (error) {
@@ -104,8 +104,7 @@ const App = () => {
       {artistStreams && (
         <div className="stream-info">
           <h3>Artist Streams</h3>
-          <p>Total Streams: {artistStreams.totalStreams}</p>
-          <p>Album Count: {artistStreams.albumCount}</p>
+          <p>Total Streams: {artistStreams.totalStreams?.totalStreams}</p>
         </div>
       )}
     </div>
