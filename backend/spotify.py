@@ -34,26 +34,29 @@ def get_total_streams_for_artist(artist_name):
         return {"error": "Artist not found"}
 
     total_streams = 0
+    total_songs = 0
 
     # Get the artist's albums
-    albums = sp.artist_albums(artist_id, album_type='album', limit=50)
+    albums = sp.artist_albums(artist_id, album_type='album,single,compilation', limit=50)
     print("Albums Data:", albums)  # Debugging line
 
     for album in albums.get('items', []):  # Use .get() to avoid KeyError
         tracks = sp.album_tracks(album.get('id', ''))
-        print("Tracks Data for Album:", tracks)  # Debugging line
+
 
         for track in tracks.get('items', []):
             track_data = sp.track(track.get('id', ''))
-            print("Track Data:", track_data)  # Debugging line
+            
 
             if isinstance(track_data, dict) and "popularity" in track_data:
                 total_streams += track_data["popularity"]
+                total_songs += 1
             else:
                 print("Unexpected track data format:", track_data)
     
 
-    return {"totalStreams": total_streams}
+    return {"totalStreams": total_streams,
+            "totalSongs": total_songs}
 
 def search_artists(query):
     """Fetch artist suggestions based on a search query."""
