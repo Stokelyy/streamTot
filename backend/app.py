@@ -33,7 +33,8 @@ def get_artist_streams():
                 return jsonify({"error": "Artist not found or no streams available"}), 404
             
             return jsonify({
-                "totalStreams": total_streams,
+                "totalStreams": total_streams["totalStreams"],
+                "totalSongs": total_streams["totalSongs"]
             })
         except Exception as e:
             return jsonify({"error": str(e)}), 500

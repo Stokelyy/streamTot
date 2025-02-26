@@ -124,7 +124,8 @@ const App = () => {
       {artistStreams && !loading && (
         <div className="stream-info">
           <h3>Artist Popularity</h3>
-          <p>Artist Popularity Score: {artistStreams.totalStreams?.totalStreams}</p>
+          <p>Total Artist Popularity: {artistStreams.totalStreams}</p>
+          <p>Total Songs Considered: {artistStreams.totalSongs}</p> {/* Display total songs */}
         </div>
       )}
 
