@@ -144,3 +144,57 @@ input[type="text"]:focus {
   background-color: #0099ff; /* Highlight on hover with a green color */
   color: #333; /* Dark text color on hover */
 }
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Loading popup */
+.loading-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(36, 35, 35);
+  padding: 20px 40px;
+  border-radius: 10px;
+  text-align: center;
+  width: 300px;
+  height: 150px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Updated Spinner */
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3); /* Light transparency for outer ring */
+  border-top-color: #007bff; /* Bright blue color like a button */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+/* Keyframes for spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

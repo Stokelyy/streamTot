@@ -6,6 +6,8 @@ const App = () => {
   const [suggestions, setSuggestions] = useState([]); // For the suggestions
   const [artistStreams, setArtistStreams] = useState(null); // To hold the streams data
   const [isFocused, setIsFocused] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(null); // Error state
   // Handle input changes and fetch artist suggestions
   const handleInputChange = async (event) => {
     const searchQuery = event.target.value;
@@ -49,18 +51,30 @@ const App = () => {
       setIsFocused(true);
     };
 
-  // Function to get streams for the selected artist
-  const handleGetStreams = async (artistName) => {
-    if (!artistName) return;
+ // Function to get streams for the selected artist
+ const handleGetStreams = async (artistName) => {
+  if (!artistName) return;
 
-    try {
-      const response = await fetch(`http://localhost:5000/get-artist-streams?artist=${artistName}`);
-      const data = await response.json();
-      setArtistStreams(data); // Assuming the response returns the streams data
-    } catch (error) {
-      console.error("Error fetching artist streams:", error);
+  setLoading(true); // Start loading
+  setError(null);
+  setArtistStreams(null);
+
+  try {
+    const response = await fetch(`http://localhost:5000/get-artist-streams?artist=${artistName}`);
+    const data = await response.json();
+
+    if (response.ok) {
+      setArtistStreams(data);
+    } else {
+      setError("Error fetching artist streams.");
     }
-  };
+  } catch (error) {
+    setError("Failed to fetch data. Please try again.");
+    console.error("Error fetching artist streams:", error);
+  }
+
+  setLoading(false); // Stop loading
+};
 
   return (
     <div className="app-container">
@@ -96,17 +110,34 @@ const App = () => {
 
 
       {/* Button to Get Artist Streams */}
-      <button className="search-button" onClick={() => handleGetStreams(input)}>
-        Get Streams
+      <button className="search-button" onClick={() => handleGetStreams(input)} disabled={loading}>
+        {loading ? "Loading..." : "Get Popularity"}
       </button>
 
+       {/* Loading Indicator */}
+       {loading && <p className="loading-text">Fetching data... Please wait.</p>}
+
+      {/* Error Message */}
+      {error && <p className="error-text">{error}</p>}
+
       {/* Display Artist Stream Data */}
-      {artistStreams && (
+      {artistStreams && !loading && (
         <div className="stream-info">
-          <h3>Artist Streams</h3>
-          <p>Total Streams: {artistStreams.totalStreams?.totalStreams}</p>
+          <h3>Artist Popularity</h3>
+          <p>Artist Popularity Score: {artistStreams.totalStreams?.totalStreams}</p>
         </div>
       )}
+
+       {/* Loading Popup */}
+       {loading && (
+        <div className="loading-overlay">
+          <div className="loading-popup">
+            <div className="spinner"></div> {/* Spinner added here */}
+              <p>Loading...</p>
+            </div>
+          </div>
+        )}
+
     </div>
   );
 };
