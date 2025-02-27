@@ -3,6 +3,11 @@ from spotify import get_total_streams_for_artist, get_artist_id, search_artists
 from flask_cors import CORS  # Import CORS
 import time
 import requests
+import sys
+import os
+
+# Add the backend folder to the module search path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'backend')))
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
