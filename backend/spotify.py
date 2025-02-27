@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables
-dotenv_path = os.path.join(os.getcwd(), '.env')
+dotenv_path = os.path.join(os.getcwd(), '..', '.env')
 load_dotenv(dotenv_path=dotenv_path)
 
 # Fetch environment variables
