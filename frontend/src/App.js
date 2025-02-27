@@ -16,7 +16,7 @@ const App = () => {
     if (searchQuery) {
       try {
         // Make sure this request matches the backend route and gets the correct response
-        const response = await fetch(`http://3.133.127.141:5000/search-artists?query=${searchQuery}`);
+        const response = await fetch(`http://3.130.99.255:5000/search-artists?query=${searchQuery}`);
         const data = await response.json();
   
         // Check if there are artist items in the response
@@ -60,7 +60,7 @@ const App = () => {
   setArtistStreams(null);
 
   try {
-    const response = await fetch(`http://3.133.127.141:5000/get-artist-streams?artist=${artistName}`);
+    const response = await fetch(`http://3.130.99.255:5000/get-artist-streams?artist=${artistName}`);
     const data = await response.json();
 
     if (response.ok) {
