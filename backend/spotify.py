@@ -37,7 +37,7 @@ def get_total_streams_for_artist(artist_name):
     total_songs = 0
 
     # Get the artist's albums
-    albums = sp.artist_albums(artist_id, album_type='album,single,compilation', limit=50)
+    albums = sp.artist_albums(artist_id, album_type='album,single', limit=50)
     print("Albums Data:", albums)  # Debugging line
 
     for album in albums.get('items', []):  # Use .get() to avoid KeyError
